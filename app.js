@@ -2,13 +2,13 @@
 
 var allItems = [];
 
-function Item ( displayName, filePath, displayCount, voteCount, id ){
+function Item ( displayName, filePath, id ){
 
     this.displayName = displayName;
     this.filePath = filePath;
     this.displayCount = 0;
     this.voteCount = 0;
-    this.id = id;
+    this.id = displayName;
 
     allItems.push( this );
 }
@@ -39,32 +39,70 @@ var randomImage = function() {
     return allItems[numberItem].filePath;
 } 
 
-var displayImage = function(){
-    
-    var elImage1 = document.getElementById('first');
-    elImage1.setAttribute('src', randomImage());
-    
-    var elImage2 = document.getElementById('second');
-        if (randomImage() === 'first') { randomImage()
+var images = [];
+var usedImages =[];
+
+var checkImages = function(){
+    usedImages = images;
+    images = [];
+    do {
+        var imgPath = randomImage();
+        if (!images.includes(imgPath)
+            && !usedImages.includes(imgPath)){
+            images.push(imgPath);
         }
-        else {elImage2.setAttribute('src', randomImage())
-        };
-    
-    var elImage3 = document.getElementById('third');
-        if (randomImage() === 'first' || (randomImage() === 'second')) {randomImage()};
-        elImage3.setAttribute('src', randomImage())
+    } while (images.length < 3);
+    return images;
 }
 
-// count: function(voteCount){
-//     voteCount += 1;
+function addToCount(filePath) {
+    for (var i = 0; i < allItems.length; i++) {
+        if (allItems[i]['filePath'] === filePath) {
+            console.log(i);
+            return i;
+        }
+    }
+    return null;
+}
 
-//     var selectItems = allItems[voteCount.getAttribute( 'src')];
-//     selectItems.count++;
-// }
+var displayImage = function(){
+    checkImages();
+    
+    var elImage1 = document.getElementById('first');
+    elImage1.setAttribute('src', images[0]);
+    elImage1.setAttribute('dataPath', images[0]);
+    allItems[addToCount(images[0])].displayCount++;
+    console.log(allItems[addToCount(images[0])].displayCount);
 
-//     var el = document.getElementsByTagName('img');
-//     el.addEventListener('click', count());
+    var elImage2 = document.getElementById('second');
+    elImage2.setAttribute('src', images[1]);
+    elImage2.setAttribute('dataPath', images[1]);
+    allItems[addToCount(images[1])].displayCount++;
+    console.log(allItems[addToCount(images[0])].displayCount);
+    
+    var elImage3 = document.getElementById('third');
+    elImage3.setAttribute('src', images[2]);
+    elImage3.setAttribute('dataPath', images[2]);
+    allItems[addToCount(images[2])].displayCount++;
+    console.log(allItems[addToCount(images[0])].displayCount);
+}
 
 
+var survey = document.getElementById('survey');
+survey.addEventListener('click', voteHandler);
+
+function voteHandler(event){
+    var clickedEl = event.target;
+    var vote = clickedEl.getAttribute('dataPath');
+    allItems[addToCount(vote)].displayCount++;
+    console.log(allItems[addToCount(vote)].displayCount);
+    displayImage();
+
+    
+    // console.log(clickedEl.id);
+    // console.log(clickedEl.src);
+    // console.log(clickedEl.getAttribute('dataPath'));
+}
 
 displayImage();
+
