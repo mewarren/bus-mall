@@ -19,6 +19,11 @@ function Item ( displayName, filePath, id ){
     allItems.push( this );
 }
 
+function saveToLS ( key, value ) {
+    var str = JSON.stringify( value );
+    localStorage.setItem( key, str );
+}
+
 // object arguments //
 var bag = new Item('bag', 'images/bag.jpg');
 var banana = new Item('banana', 'images/banana.jpg');
@@ -107,12 +112,11 @@ function voteHandler(event){ // tracks image vote and adds three new images //
 
     if (clicks >25){
         showChart();
+        saveToLS('itemTally', allItems);
     }
 }
 
 displayImage();
-
-
 
 function addToArray(){
     var dataset =[];
@@ -138,5 +142,4 @@ function showChart(){
 
     var chartCanvas = document.getElementById('votes');
     var voteChart = new Chart(chartCanvas, chartObject);
-
 }
